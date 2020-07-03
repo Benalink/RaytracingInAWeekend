@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using Raytracer.Helpers;
 using Raytracer.Hit;
 
 namespace Raytracer.Material
@@ -6,24 +7,21 @@ namespace Raytracer.Material
     public class Metal : IMaterial
     {
         private readonly Vector3 albedo;
+        private readonly float fuzziness;
 
-        public Metal(Vector3 albedo)
+        public Metal(Vector3 albedo, float fuzziness)
         {
             this.albedo = albedo;
+            this.fuzziness = fuzziness < 1f ? fuzziness : 1f;
         }
         
         public bool Scatter(Ray rayIn, ref HitRecord hitRecord, out Vector3 attenuation, out Ray scattered)
         {
-            Vector3 reflected = Reflect(rayIn.Direction, hitRecord.Normal);
-            scattered = new Ray(hitRecord.Position, reflected);
+            Vector3 reflected = Vector3.Reflect(rayIn.Direction, hitRecord.Normal);
+            scattered = new Ray(hitRecord.Position, reflected + this.fuzziness * VectorHelper.GetRandomInUnitSphere());
             attenuation = this.albedo;
 
             return Vector3.Dot(scattered.Direction, hitRecord.Normal) > 0f;
-        }
-
-        private Vector3 Reflect(Vector3 hitDirection, Vector3 normal)
-        {
-            return hitDirection - 2 * Vector3.Dot(hitDirection, normal) * normal;
         }
     }
 }

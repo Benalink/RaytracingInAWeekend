@@ -23,16 +23,24 @@ namespace Raytracer
             const int ny = 400;
             const int ns = 100;
 
-            var interactableObjects = new List<IHitable>
-            {
-                new Sphere(new Vector3(0f, 0f, -1f), 0.5f, new Lambertian(new Vector3(0.8f, 0.3f, 0.3f))),
-                new Sphere(new Vector3(0f, -100.5f, -1f), 100f, new Lambertian(new Vector3(0.8f, 0.8f, 0.8f))),
-                new Sphere(new Vector3(1f, 0f, -1f), 0.5f, new Metal(new Vector3(0.8f, 0.6f, 0.2f))),
-                new Sphere(new Vector3(-1f, 0f, -1f), 0.5f, new Metal(new Vector3(0.8f, 0.8f, 0.8f)))
-            };
-            var interactableObjectCollection = new HitableCollection(interactableObjects);
+            // var interactableObjects = new List<IHitable>
+            // {
+            //     new Sphere(new Vector3(0f, 0f, -1f), 0.5f, new Lambertian(new Vector3(0.1f, 0.2f, 0.5f))),
+            //     new Sphere(new Vector3(0f, -100.5f, -1f), 100f, new Lambertian(new Vector3(0.8f, 0.8f, 0.0f))),
+            //     new Sphere(new Vector3(1f, 0f, -1f), 0.5f, new Metal(new Vector3(0.8f, 0.6f, 0.2f), 0f)),
+            //     new Sphere(new Vector3(-1f, 0f, -1f), 0.5f, new Dielectric(1.5f))
+            // };
+            // var interactableObjectCollection = new HitableCollection(interactableObjects);
 
-            var camera = new Camera();
+            IHitable interactableObjectCollection = CreateRandomScene();
+
+            var camPos = new Vector3(3f, 3f, 2f);
+            var camTarget = new Vector3(0f, 0f, -1f);
+            float focusDistance = (camPos - camTarget).Length();
+            float aperture = 0.5f;
+            
+            var camera = new Camera(camPos, camTarget, new Vector3(0f, 1f, 0f), 90,
+                nx / (float) ny, aperture, focusDistance);
 
 #if DEBUG
             Console.WriteLine("Hardware acceleration is disabled in Debug mode");
@@ -65,6 +73,43 @@ namespace Raytracer
             stopwatch.Stop();
             image.SaveAsPng(fileWriter);
             Console.WriteLine($"Render took {stopwatch.ElapsedMilliseconds}ms");
+        }
+
+        private static IHitable CreateRandomScene()
+        {
+            int n = 500;
+            var hitables = new List<IHitable>(n + 1);
+            hitables.Add(new Sphere(new Vector3(0f, -1000f, 0f), 1000f, new Lambertian(new Vector3(0.5f, 0.5f, 0.5f))));
+            int i = 1;
+            for (int a = -11; a < 11; a++)
+            {
+                for (int b = -11; b < 11; b++)
+                {
+                    float randomMat = (float)Random.NextDouble();
+                    var center = new Vector3(a + 0.9f * (float)Random.NextDouble(), 0.2f, b + 0.9f * (float)Random.NextDouble());
+                    if((center - new Vector3(4f, 0.2f, 0f)).Length() > 0.9f)
+                    {
+                        if (randomMat < 0.8f) //diffuse
+                        {
+                            hitables.Add(new Sphere(center, 0.2f, new Lambertian(new Vector3((float)Random.NextDouble() * (float)Random.NextDouble(), (float)Random.NextDouble() * (float)Random.NextDouble(), (float)Random.NextDouble() * (float)Random.NextDouble()))));
+                        }
+                        else if (randomMat < 0.95f) //metal
+                        {
+                            hitables.Add(new Sphere(center, 0.2f, new Metal(new Vector3(0.5f * (1f + (float)Random.NextDouble()), 0.5f * (1 + (float)Random.NextDouble()), 0.5f * (float)Random.NextDouble()), 0.2f)));
+                        }
+                        else //glass
+                        {
+                            hitables.Add(new Sphere(center, 0.2f, new Dielectric(1.5f)));
+                        }
+                    }
+                }
+            }
+            
+            hitables.Add(new Sphere(new Vector3(0f, 1f, 0f),1.0f, new Dielectric(1.5f)));
+            hitables.Add(new Sphere(new Vector3(-4f, 1f, 0f),1.0f, new Lambertian(new Vector3(0.4f, 0.2f, 0.1f))));
+            hitables.Add(new Sphere(new Vector3(4f, 1f, 0f),1.0f, new Metal(new Vector3(0.7f, 0.6f, 0.5f), 0f)));
+            
+            return new HitableCollection(hitables);
         }
 
         private static Vector3 NormalColour(Ray ray, IHitable world)
