@@ -13,7 +13,7 @@ namespace Raytracer.Material
             this.albedo = albedo;
         }
         
-        public bool Scatter(Ray rayIn, ref HitRecord hitRecord, out Vector3 attenuation, out Ray scattered)
+        public bool Scatter(in Ray rayIn, ref HitRecord hitRecord, out Vector3 attenuation, out Ray scattered)
         {
             Vector3 target = hitRecord.Position + hitRecord.Normal + VectorHelper.GetRandomInUnitSphere();
             scattered = new Ray(hitRecord.Position, target - hitRecord.Position);

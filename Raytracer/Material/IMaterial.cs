@@ -5,6 +5,6 @@ namespace Raytracer.Material
 {
     public interface IMaterial
     {
-        bool Scatter(Ray rayIn, ref HitRecord hitRecord, out Vector3 attenuation, out Ray scattered);
+        bool Scatter(in Ray rayIn, ref HitRecord hitRecord, out Vector3 attenuation, out Ray scattered);
     }
 }

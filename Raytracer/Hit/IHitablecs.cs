@@ -2,6 +2,6 @@
 {
     public interface IHitable
     {
-        bool TestHit(Ray ray, float tMin, float tMax, ref HitRecord record);
+        bool TestHit(in Ray ray, float tMin, float tMax, ref HitRecord record);
     }
 }

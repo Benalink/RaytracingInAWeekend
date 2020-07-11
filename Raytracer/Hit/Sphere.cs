@@ -17,12 +17,12 @@ namespace Raytracer.Hit
             this.Material = material;
         }
         
-        public bool TestHit(Ray ray, float tMin, float tMax, ref HitRecord record)
+        public bool TestHit(in Ray ray, float tMin, float tMax, ref HitRecord record)
         {
             Vector3 oc = ray.Origin - this.Position;
-            float a = Vector3.Dot(ray.Direction, ray.Direction);
+            float a = ray.Direction.LengthSquared();
             float b = Vector3.Dot(oc, ray.Direction);
-            float c = Vector3.Dot(oc, oc) - this.Radius * this.Radius;
+            float c = oc.LengthSquared() - this.Radius * this.Radius;
             float discriminant = b*b * a*c;
 
             if (discriminant > 0)

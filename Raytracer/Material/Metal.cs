@@ -15,7 +15,7 @@ namespace Raytracer.Material
             this.fuzziness = fuzziness < 1f ? fuzziness : 1f;
         }
         
-        public bool Scatter(Ray rayIn, ref HitRecord hitRecord, out Vector3 attenuation, out Ray scattered)
+        public bool Scatter(in Ray rayIn, ref HitRecord hitRecord, out Vector3 attenuation, out Ray scattered)
         {
             Vector3 reflected = Vector3.Reflect(rayIn.Direction, hitRecord.Normal);
             scattered = new Ray(hitRecord.Position, reflected + this.fuzziness * VectorHelper.GetRandomInUnitSphere());

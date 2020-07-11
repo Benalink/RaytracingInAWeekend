@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Numerics;
+using Raytracer.MiscUtils;
 
 namespace Raytracer
 {
     public class Camera
     {
-        private static readonly Random Random = new Random();
-
-        private Vector3 lowerLeftCorner;
-        private Vector3 horizontal;
-        private Vector3 vertical;
-        private float lensRadius;
+        private readonly Vector3 lowerLeftCorner;
+        private readonly Vector3 horizontal;
+        private readonly Vector3 vertical;
+        private readonly float lensRadius;
         
-        private Vector3 u;
-        private Vector3 v;
-        private Vector3 w;
+        private readonly Vector3 u;
+        private readonly Vector3 v;
+        private readonly Vector3 w;
 
         public Vector3 Position { get; }
 
@@ -47,7 +46,7 @@ namespace Raytracer
             Vector3 point;
             do
             {
-                point = 2f * new Vector3((float) Random.NextDouble(), (float) Random.NextDouble(), 0) -
+                point = 2f * new Vector3((float) StaticRandom.NextDouble(), (float) StaticRandom.NextDouble(), 0) -
                         new Vector3(1f, 1f, 0f);
             } while (Vector3.Dot(point, point) >= 1f);
 

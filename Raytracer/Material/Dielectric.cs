@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Numerics;
 using Raytracer.Hit;
+using Raytracer.MiscUtils;
 
 namespace Raytracer.Material
 {
     public class Dielectric: IMaterial
     {
-        private static readonly Random Random = new Random();
         private readonly float refractiveIndex;
 
         public Dielectric(float refractiveIndex)
         {
             this.refractiveIndex = refractiveIndex;
         }
-        public bool Scatter(Ray rayIn, ref HitRecord hitRecord, out Vector3 attenuation, out Ray scattered)
+        public bool Scatter(in Ray rayIn, ref HitRecord hitRecord, out Vector3 attenuation, out Ray scattered)
         {
             Vector3 outwardNormal;
             Vector3 reflected = Vector3.Reflect(rayIn.Direction, hitRecord.Normal);
@@ -46,7 +46,7 @@ namespace Raytracer.Material
                 reflectProbability = 1f;
             }
 
-            if ((float) Random.NextDouble() < reflectProbability)
+            if ((float) StaticRandom.NextDouble() < reflectProbability)
             {
                 scattered = new Ray(hitRecord.Position, reflected);
             }

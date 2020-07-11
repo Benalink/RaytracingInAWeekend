@@ -11,7 +11,7 @@ namespace Raytracer.Hit
             this.RayObjects = rayObjects;
         }
 
-        public bool TestHit(Ray ray, float tMin, float tMax, ref HitRecord record)
+        public bool TestHit(in Ray ray, float tMin, float tMax, ref HitRecord record)
         {
             var tempRec = new HitRecord();
             bool hit = false;
@@ -19,7 +19,7 @@ namespace Raytracer.Hit
             
             foreach (IHitable rayObject in this.RayObjects)
             {
-                if (rayObject.TestHit(ray, tMin, closestSoFar, ref tempRec))
+                if (rayObject.TestHit(in ray, tMin, closestSoFar, ref tempRec))
                 {
                     hit = true;
                     closestSoFar = tempRec.T;

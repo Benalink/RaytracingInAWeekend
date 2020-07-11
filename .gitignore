@@ -3,3 +3,6 @@ obj/
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
+.vs/RayTracingInAWeekend/DesignTimeBuild/.dtbcache.v2
+
+.vs/RayTracingInAWeekend/v16/.suo
